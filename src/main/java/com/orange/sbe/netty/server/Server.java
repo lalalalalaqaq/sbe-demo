@@ -1,6 +1,6 @@
 package com.orange.sbe.netty.server;
 
-import com.orange.sbe.netty.Constants;
+import com.orange.sbe.netty.constants.ConfigConstants;
 import com.orange.sbe.netty.codec.SbeMessageDecoder;
 import com.orange.sbe.netty.codec.SbeMessageEncoder;
 import io.netty.bootstrap.ServerBootstrap;
@@ -33,9 +33,9 @@ public class Server {
 						sc.pipeline().addLast(new SbeMessageEncoder());
 					}
 				});
-		ChannelFuture cf = b.bind(Constants.REMOTEIP,Constants.PORT).sync();
+		ChannelFuture cf = b.bind(ConfigConstants.REMOTEIP, ConfigConstants.PORT).sync();
 		
-		log.info("Netty server start ok :  {}:{}" , Constants.REMOTEIP , Constants.PORT);
+		log.info("Netty server start ok :  {}:{}" , ConfigConstants.REMOTEIP , ConfigConstants.PORT);
 		//释放连接
 		cf.channel().closeFuture().sync();
 		work.shutdownGracefully();

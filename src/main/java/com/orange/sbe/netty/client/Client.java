@@ -2,9 +2,10 @@ package com.orange.sbe.netty.client;
 
 import java.math.BigDecimal;
 import java.net.InetSocketAddress;
+import java.util.List;
 
 import com.orange.sbe.model.WithdrawRequest;
-import com.orange.sbe.netty.Constants;
+import com.orange.sbe.netty.constants.ConfigConstants;
 import com.orange.sbe.netty.codec.SbeMessageDecoder;
 import com.orange.sbe.netty.codec.SbeMessageEncoder;
 
@@ -21,7 +22,7 @@ public class Client {
 	EventLoopGroup group = new NioEventLoopGroup();
 
 	public static void main(String[] args) throws Exception {
-		new Client().connect(Constants.PORT, Constants.REMOTEIP);
+		new Client().connect(ConfigConstants.PORT, ConfigConstants.REMOTEIP);
 	}
 
 
@@ -37,11 +38,18 @@ public class Client {
 					}
 				});
 		ChannelFuture future = b.connect(new InetSocketAddress(host, port),
-				new InetSocketAddress(Constants.LOCALIP, Constants.LOCAL_PORT)).sync();
+				new InetSocketAddress(ConfigConstants.LOCALIP, ConfigConstants.LOCAL_PORT)).sync();
 		Channel c = future.channel();
-		c.writeAndFlush(new WithdrawRequest(10001, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ));
+		c.writeAndFlush(mockRepeatReq());
 		future.channel().closeFuture().sync();
 
+	}
+
+	private static List<WithdrawRequest> mockRepeatReq() {
+		WithdrawRequest withdrawRequest1 = new WithdrawRequest(10001, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
+		WithdrawRequest withdrawRequest2 = new WithdrawRequest(20001, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
+		WithdrawRequest withdrawRequest3 = new WithdrawRequest(30001, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
+		return List.of(withdrawRequest1,withdrawRequest2,withdrawRequest3);
 	}
 
 }

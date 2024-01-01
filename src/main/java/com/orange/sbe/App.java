@@ -7,6 +7,7 @@ import org.agrona.concurrent.UnsafeBuffer;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -17,7 +18,7 @@ public class App {
 
     public static void main(String[] args) {
         singleEncode();
-//        repeatEncode();
+        repeatEncode();
     }
 
 
@@ -36,8 +37,8 @@ public class App {
      */
     private static void singleEncode() {
         WithdrawRequest withdrawRequest = mockSingleReq();
-        UnsafeBuffer buffer = encodeRequest(withdrawRequest);
-        assert withdrawRequest.equals(decodeRequest(buffer)) : "Objects are not equal";
+        UnsafeBuffer unsafeBuffer = encodeRequest(withdrawRequest);
+        System.out.println(withdrawRequest.equals(decodeRequests(unsafeBuffer)));
     }
 
 
@@ -60,8 +61,7 @@ public class App {
     private static void repeatEncode() {
         List<WithdrawRequest> withdrawRequests = mockRepeatReq();
         UnsafeBuffer unsafeBuffer = encodeRequests(withdrawRequests);
-        List<WithdrawRequest> requestList = decodeRequests(unsafeBuffer);
-        assert withdrawRequests.equals(requestList)  : "Objects are not equal";
+        System.out.println(withdrawRequests.equals(decodeRequests(unsafeBuffer)));
 
     }
 
@@ -69,11 +69,14 @@ public class App {
         return new WithdrawRequest(810975, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
     }
 
+    /**
+     * byte[] bytes = {0, 0, 2, 0, 1, 0, 0, 0, 20, 0, 3, 0, 1, 2, 17, 39, -12, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1, 1, 0, 33, 78, -11, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1, 1, 1, 49, 117, -10, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1};
+     */
     private static List<WithdrawRequest> mockRepeatReq() {
         WithdrawRequest withdrawRequest1 = new WithdrawRequest(810975, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
         WithdrawRequest withdrawRequest2 = new WithdrawRequest(810976, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
         WithdrawRequest withdrawRequest3 = new WithdrawRequest(810977, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
-        return List.of(withdrawRequest1,withdrawRequest2,withdrawRequest3);
+        return new ArrayList<>(List.of(withdrawRequest1,withdrawRequest2,withdrawRequest3));
     }
 
 
