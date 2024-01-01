@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sbe:messageSchema xmlns:sbe="http://fixprotocol.io/2016/sbe"
+                   package="com.orange.sbe.stub"
+                   id="1"
+                   version="0"
+                   semanticVersion="5.2"
+                   description="A schema represents stock market data.">
+    <types>
+        <composite name="messageHeader" description="Message identifiers and length of message root.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="templateId" primitiveType="uint16"/>
+            <type name="schemaId" primitiveType="uint16"/>
+            <type name="version" primitiveType="uint16"/>
+        </composite>
+        <!--  十进制数编码是复合类型，由两个子字段组成：尾数和指数。-->
+        <composite name="Decimal">
+            <type name="mantissa" primitiveType="uint64" minValue="0"/>
+            <type name="exponent" primitiveType="uint64" minValue="0"/>
+        </composite>
+        <composite name="groupSizeEncoding" description="Repeating group dimensions.">
+            <type name="blockLength" primitiveType="uint16"/>
+            <type name="numInGroup" primitiveType="uint16"/>
+        </composite>
+        <enum name="Market" encodingType="uint8">
+            <validValue name="NYSE" description="New York Stock Exchange">0</validValue>
+            <validValue name="NASDAQ" description="National Association of Securities Dealers Automated Quotations">1</validValue>
+        </enum>
+        <enum name="Currency" encodingType="uint8">
+            <validValue name="CNY" description="CHINA Yuan">0</validValue>
+            <validValue name="USD" description="US Dollar">1</validValue>
+            <validValue name="BTC" description="BITCOIN">2</validValue>
+        </enum>
+    </types>
+    <sbe:message name="WithdrawRequest" id="1" description="Withdraw Request">
+        <field name="market" id="1" type="Market"/>
+        <field name="currency" id="2" type="Currency"/>
+        <field name="accountId" id="3" type="uint16"/>
+        <field name="amount" id="4" type="Decimal"/>
+    </sbe:message>
+
+    <sbe:message name="WithdrawRequestGroup" id="2" description="WithdrawRequest with group">
+        <group name="request" id="1" dimensionType="groupSizeEncoding">
+            <field name="market" id="1" type="Market"/>
+            <field name="currency" id="2" type="Currency"/>
+            <field name="accountId" id="3" type="uint16"/>
+            <field name="amount" id="4" type="Decimal"/>
+        </group>
+    </sbe:message>
+</sbe:messageSchema>
