@@ -24,7 +24,6 @@ public class SbeMessageDecoder extends ByteToMessageDecoder {
 
     @Override
     protected void decode(ChannelHandlerContext channelHandlerContext, ByteBuf byteBuf, List<Object> list) throws Exception {
-        ByteBuffer buffer = ByteBuffer.allocate(byteBuf.readableBytes());
         ByteBuffer byteBuffer = ByteBuffer.allocate(72);
         byte[] bytes = new byte[72];
         // 写入前 32 个字节到 byteBuffer1
@@ -34,9 +33,8 @@ public class SbeMessageDecoder extends ByteToMessageDecoder {
             System.out.print(b + " ");
         }
         byteBuffer.put(bytes);
-        List<WithdrawRequest> withdrawRequest = decodeRequests(new UnsafeBuffer(byteBuffer));
-        list.add(withdrawRequest);
-        System.out.println(withdrawRequest);
+        List<WithdrawRequest> withdrawRequests = decodeRequests(new UnsafeBuffer(byteBuffer));
+        System.out.println(withdrawRequests);
         byteBuf.skipBytes(byteBuf.readableBytes());
     }
 

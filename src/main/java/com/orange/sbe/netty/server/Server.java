@@ -17,7 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 public class Server {
 
 	public static void main(String[] args) throws Exception {
-		EventLoopGroup boss = new NioEventLoopGroup();
+   		EventLoopGroup boss = new NioEventLoopGroup();
 		EventLoopGroup work = new NioEventLoopGroup();
 		ServerBootstrap b = new ServerBootstrap();
 		b.group(boss, work)

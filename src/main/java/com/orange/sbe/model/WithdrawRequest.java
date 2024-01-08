@@ -15,7 +15,7 @@ public class WithdrawRequest {
     /**
      * 2 byte
      */
-    private Integer accountId;
+    private Long accountId;
 
     /**
      * 8 byte +  8 byte
@@ -32,18 +32,18 @@ public class WithdrawRequest {
      */
     private Market market;
 
-    public WithdrawRequest(Integer accountId, BigDecimal amount, Currency currency, Market market) {
+    public WithdrawRequest(Long accountId, BigDecimal amount, Currency currency, Market market) {
         this.accountId = accountId;
         this.amount = amount;
         this.currency = currency;
         this.market = market;
     }
 
-    public Integer getAccountId() {
+    public Long getAccountId() {
         return accountId;
     }
 
-    public void setAccountId(Integer accountId) {
+    public void setAccountId(Long accountId) {
         this.accountId = accountId;
     }
 

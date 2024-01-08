@@ -31,12 +31,6 @@ public class SbeMessageEncoder extends MessageToByteEncoder  {
         System.out.println(obj);
         ByteBuffer res = unsafeBuffer.byteBuffer();
         byteBuf.writeBytes(res);
-        byte[] bytes = new byte[72];
-        for (int i = 0; i < 72; i++) {
-            byte b = byteBuf.getByte(i);
-            bytes[i] = b;
-            System.out.print(b + " ");
-        }
     }
 
     private static UnsafeBuffer encodeRequests(List<WithdrawRequest> withdrawRequests) {
@@ -55,22 +49,6 @@ public class SbeMessageEncoder extends MessageToByteEncoder  {
                     .accountId(withdrawRequest.getAccountId())
                     .amount().mantissa(priceMantissa).exponent(priceExponent);
         }
-        return buffer;
-    }
-
-    private static UnsafeBuffer encodeRequest(WithdrawRequest withdrawRequest) {
-        // At least 28 bytes need to be allocated.
-        UnsafeBuffer buffer = new UnsafeBuffer(ByteBuffer.allocate(32));
-        WithdrawRequestEncoder withdrawRequestEncoder = new WithdrawRequestEncoder();
-        MessageHeaderEncoder messageHeaderEncoder = new MessageHeaderEncoder();
-        withdrawRequestEncoder.wrapAndApplyHeader(buffer,0, messageHeaderEncoder);
-        BigDecimal amount = withdrawRequest.getAmount();
-        int priceMantissa = amount.scaleByPowerOfTen(amount.scale()).intValue();
-        int priceExponent = amount.scale() * -1;
-        withdrawRequestEncoder.market(withdrawRequest.getMarket())
-                .currency(withdrawRequest.getCurrency())
-                .accountId(withdrawRequest.getAccountId())
-                .amount().mantissa(priceMantissa).exponent(priceExponent);
         return buffer;
     }
 }

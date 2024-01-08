@@ -34,7 +34,7 @@
     <sbe:message name="WithdrawRequest" id="1" description="Withdraw Request">
         <field name="market" id="1" type="Market"/>
         <field name="currency" id="2" type="Currency"/>
-        <field name="accountId" id="3" type="uint16"/>
+        <field name="accountId" id="3" type="uint32"/>
         <field name="amount" id="4" type="Decimal"/>
     </sbe:message>
 
@@ -42,7 +42,7 @@
         <group name="request" id="1" dimensionType="groupSizeEncoding">
             <field name="market" id="1" type="Market"/>
             <field name="currency" id="2" type="Currency"/>
-            <field name="accountId" id="3" type="uint16"/>
+            <field name="accountId" id="3" type="uint32"/>
             <field name="amount" id="4" type="Decimal"/>
         </group>
     </sbe:message>

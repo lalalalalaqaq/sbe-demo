@@ -7,7 +7,6 @@ import org.agrona.concurrent.UnsafeBuffer;
 import java.math.BigDecimal;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,9 +35,12 @@ public class App {
      * UnsafeBuffer : 20 + 8 = 28 byte
      */
     private static void singleEncode() {
-        WithdrawRequest withdrawRequest = mockSingleReq();
-        UnsafeBuffer unsafeBuffer = encodeRequest(withdrawRequest);
-        System.out.println(withdrawRequest.equals(decodeRequests(unsafeBuffer)));
+        WithdrawRequest mock = mockSingleReq();
+        UnsafeBuffer unsafeBuffer = encodeRequest(mock);
+        WithdrawRequest decoded = decodeRequest(unsafeBuffer);
+        System.out.println(mock);
+        System.out.println(decoded);
+        System.out.println(mock.equals(decoded));
     }
 
 
@@ -66,23 +68,23 @@ public class App {
     }
 
     private static WithdrawRequest mockSingleReq() {
-        return new WithdrawRequest(810975, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
+        return new WithdrawRequest(810975L, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
     }
 
     /**
      * byte[] bytes = {0, 0, 2, 0, 1, 0, 0, 0, 20, 0, 3, 0, 1, 2, 17, 39, -12, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1, 1, 0, 33, 78, -11, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1, 1, 1, 49, 117, -10, 3, 0, 0, 0, 0, 0, 0, -2, -1, -1, -1, -1, -1, -1, -1};
      */
     private static List<WithdrawRequest> mockRepeatReq() {
-        WithdrawRequest withdrawRequest1 = new WithdrawRequest(810975, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
-        WithdrawRequest withdrawRequest2 = new WithdrawRequest(810976, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
-        WithdrawRequest withdrawRequest3 = new WithdrawRequest(810977, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
+        WithdrawRequest withdrawRequest1 = new WithdrawRequest(810975L, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
+        WithdrawRequest withdrawRequest2 = new WithdrawRequest(810976L, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
+        WithdrawRequest withdrawRequest3 = new WithdrawRequest(810977L, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
         return new ArrayList<>(List.of(withdrawRequest1,withdrawRequest2,withdrawRequest3));
     }
 
 
     private static UnsafeBuffer encodeRequests(List<WithdrawRequest> withdrawRequests) {
         // At least 72 bytes need to be allocated.
-        UnsafeBuffer buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(72));
+        UnsafeBuffer buffer = new UnsafeBuffer(ByteBuffer.allocateDirect(78));
         WithdrawRequestGroupEncoder withdrawRequestGroupEncoder = new WithdrawRequestGroupEncoder();
         withdrawRequestGroupEncoder.wrapAndApplyHeader(buffer, 0,  new MessageHeaderEncoder());
         WithdrawRequestGroupEncoder.RequestEncoder requestEncoder = withdrawRequestGroupEncoder.requestCount(withdrawRequests.size());

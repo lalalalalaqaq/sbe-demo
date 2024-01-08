@@ -32,7 +32,7 @@ public class Client {
 				.option(ChannelOption.TCP_NODELAY, true)
 				.handler(new ChannelInitializer<SocketChannel>() {
 					@Override
-					public void initChannel(SocketChannel ch) throws Exception {
+					public void initChannel(SocketChannel ch) {
 						ch.pipeline().addLast(new SbeMessageDecoder());
 						ch.pipeline().addLast(new SbeMessageEncoder());
 					}
@@ -40,15 +40,16 @@ public class Client {
 		ChannelFuture future = b.connect(new InetSocketAddress(host, port),
 				new InetSocketAddress(ConfigConstants.LOCALIP, ConfigConstants.LOCAL_PORT)).sync();
 		Channel c = future.channel();
+		System.out.println("success");
 		c.writeAndFlush(mockRepeatReq());
 		future.channel().closeFuture().sync();
 
 	}
 
 	private static List<WithdrawRequest> mockRepeatReq() {
-		WithdrawRequest withdrawRequest1 = new WithdrawRequest(10001, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
-		WithdrawRequest withdrawRequest2 = new WithdrawRequest(20001, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
-		WithdrawRequest withdrawRequest3 = new WithdrawRequest(30001, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
+		WithdrawRequest withdrawRequest1 = new WithdrawRequest(10001L, BigDecimal.valueOf(10.12), Currency.BTC, Market.NASDAQ);
+		WithdrawRequest withdrawRequest2 = new WithdrawRequest(20001L, BigDecimal.valueOf(10.13), Currency.CNY, Market.NASDAQ);
+		WithdrawRequest withdrawRequest3 = new WithdrawRequest(30001L, BigDecimal.valueOf(10.14), Currency.USD, Market.NASDAQ);
 		return List.of(withdrawRequest1,withdrawRequest2,withdrawRequest3);
 	}
 
